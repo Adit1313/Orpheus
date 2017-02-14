@@ -7,13 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static Stage window;
 	
 	@Override
-	public void start(Stage primStage) {
+	public void start(Stage window) {
 		try {
-			window = primStage;
-			
 			Parent root = FXMLLoader.load(getClass().getResource("/application/style.fxml"));
 			Scene scn = new Scene(root);
 			scn.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
