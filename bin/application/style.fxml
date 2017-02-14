@@ -10,17 +10,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity"
-	minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-	prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="application.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
 	<center>
-		<MediaView fx:id="mv" fitHeight="200.0" fitWidth="200.0"
-			BorderPane.alignment="CENTER" />
+		<MediaView fx:id="mv" fitHeight="200.0" fitWidth="200.0" BorderPane.alignment="CENTER" />
 	</center>
-	<bottom>
-
-	</bottom>
 	<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>
@@ -33,35 +26,22 @@
 		</MenuBar>
 	</top>
 	<bottom>
-		<VBox prefHeight="45.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+		<VBox prefHeight="45.0" prefWidth="800.0" BorderPane.alignment="CENTER">
 			<children>
 				<Slider />
-				<AnchorPane prefHeight="39.0" prefWidth="600.0"
-					BorderPane.alignment="CENTER">
+				<AnchorPane prefHeight="39.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 					<children>
-						<Button fx:id="left" layoutX="14.0" layoutY="-5.0"
-							mnemonicParsing="false" onAction="#jumpLeft" prefWidth="24.0">
-							<cursor>
-								<Cursor fx:constant="HAND" />
-							</cursor>
+						<Button fx:id="left" layoutX="14.0" layoutY="2.0" mnemonicParsing="false" onAction="#jumpLeft" prefWidth="24.0">
+							
 						</Button>
-						<Button fx:id="play" layoutX="53.0" layoutY="-5.0"
-							mnemonicParsing="false" onAction="#playOrPause" prefWidth="24.0">
-							<cursor>
-								<Cursor fx:constant="HAND" />
-							</cursor>
+						<Button fx:id="play" layoutX="53.0" layoutY="2.0" mnemonicParsing="false" onAction="#playOrPause" prefWidth="24.0">
+							
 						</Button>
-						<Button fx:id="right" layoutX="91.0" layoutY="-5.0"
-							mnemonicParsing="false" onAction="#jumpRight" prefWidth="24.0">
-							<cursor>
-								<Cursor fx:constant="HAND" />
-							</cursor>
+						<Button fx:id="right" layoutX="92.0" layoutY="2.0" mnemonicParsing="false" onAction="#jumpRight" prefWidth="24.0">
+							
 						</Button>
-						<Button fx:id="stop" layoutX="129.0" layoutY="-5.0"
-							mnemonicParsing="false" onAction="#stop" prefWidth="24.0">
-							<cursor>
-								<Cursor fx:constant="HAND" />
-							</cursor>
+						<Button fx:id="stop" layoutX="129.0" layoutY="2.0" mnemonicParsing="false" onAction="#stop" prefWidth="24.0">
+							
 						</Button>
 					</children>
 				</AnchorPane>
