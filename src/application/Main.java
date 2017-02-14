@@ -19,6 +19,8 @@ public class Main extends Application {
 			Scene scn = new Scene(root);
 			scn.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
+			window.setFullScreen(true);
+			window.setResizable(false);
 			window.setScene(scn);
 			window.setTitle("Orpheus");
 			window.show();
