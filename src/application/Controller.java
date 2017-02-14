@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 public class Controller implements Initializable {
@@ -90,6 +91,16 @@ public class Controller implements Initializable {
 
 	public void jumpRight(ActionEvent ae) {
 		mp.seek(mp.getCurrentTime().add(Duration.seconds(10)));
+	}
+	
+	public void loadFile() {
+		FileChooser fc = new FileChooser();
+		fc.setInitialDirectory(new File(System.getProperty("user.home")));
+		fc.setTitle("Select Video!");
+		
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
+		
+		File toPlay = fc.showOpenDialog(Main.window);
 	}
 	
 	/*
