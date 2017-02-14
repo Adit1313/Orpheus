@@ -98,6 +98,7 @@ public class Controller implements Initializable {
 		fc.setTitle("Select Video!");
 		
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP4", "*.mp4"));
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
 		
 		String toPlay = fc.showOpenDialog(Main.window).getAbsolutePath();
 		
