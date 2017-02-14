@@ -3,7 +3,6 @@ package application;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
@@ -33,6 +32,12 @@ public class Controller implements Initializable {
 	private Button right;
 	@FXML
 	private Button stop;
+	
+	private ImageView playIcon = new ImageView(new Image(getClass().getResourceAsStream("/play.png")));
+	private ImageView pauseIcon = new ImageView(new Image(getClass().getResourceAsStream("/pause.png")));
+	private ImageView stopIcon = new ImageView(new Image(getClass().getResourceAsStream("/stop.png")));
+	private ImageView forwardIcon = new ImageView(new Image(getClass().getResourceAsStream("/forward.png")));
+	private ImageView backIcon = new ImageView(new Image(getClass().getResourceAsStream("/backward.png")));
 
 	private boolean playing = true;
 
@@ -55,24 +60,17 @@ public class Controller implements Initializable {
 	}
 
 	private void setIcons() {
-		Image playIcon = new Image(getClass().getResourceAsStream("/pause.png"));
-		play.setGraphic(new ImageView(playIcon));
-
-		playIcon = new Image(getClass().getResourceAsStream("/backward.png"));
-		left.setGraphic(new ImageView(playIcon));
-
-		playIcon = new Image(getClass().getResourceAsStream("/forward.png"));
-		right.setGraphic(new ImageView(playIcon));
-
-		playIcon = new Image(getClass().getResourceAsStream("/stop.png"));
-		stop.setGraphic(new ImageView(playIcon));
+		play.setGraphic(pauseIcon);
+		stop.setGraphic(stopIcon);
+		left.setGraphic(backIcon);
+		right.setGraphic(forwardIcon);
 	}
 
 	public void playOrPause(ActionEvent ae) {
 		if (playing) {
 			mp.pause();
 			playing = false;
-			play.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/play.png"))));
+			play.setGraphic(playIcon);
 		} else {
 			mp.setRate(1);
 			mp.play();
@@ -83,6 +81,7 @@ public class Controller implements Initializable {
 
 	public void stop(ActionEvent ae) {
 		mp.stop();
+		play.setGraphic(playIcon);
 	}
 
 	public void jumpLeft(ActionEvent ae) {

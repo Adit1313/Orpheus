@@ -39,6 +39,7 @@ public class Main extends Application {
 					}
 				}
 			});
+			
 			window.setResizable(false);
 			window.setScene(scn);
 			window.setTitle("Orpheus");
