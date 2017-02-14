@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 public class Controller implements Initializable {
@@ -93,23 +94,20 @@ public class Controller implements Initializable {
 	}
 	
 	public void loadFile() {
+		FileChooser fc = new FileChooser();
+		fc.setInitialDirectory(new File(System.getProperty("user.home")));
+		fc.setTitle("Select Video!");
 		
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP4", "*.mp4"));
+		
+		String toPlay = fc.showOpenDialog(Main.window).getAbsolutePath();
+		
+		mp.stop();
+		
+		m = new Media(new File(toPlay).toURI().toString());
+		mp = new MediaPlayer(m);
+		mv.setMediaPlayer(mp);
+		mp.setAutoPlay(true);
 	}
-	
-	/*
-	 * public void pause(ActionEvent ae) { mp.pause(); }
-	 * 
-	 * public void speedUp(ActionEvent ae) { mp.setRate(mp.getRate() + 0.1); }
-	 * 
-	 * public void slowDown(ActionEvent ae) { mp.setRate(mp.getRate() - 0.1); }
-	 * 
-	 * public void reload(ActionEvent ae) { mp.seek(mp.getStartTime());
-	 * mp.play(); }
-	 * 
-	 * public void start(ActionEvent ae) { mp.seek(mp.getStartTime()); }
-	 * 
-	 * public void last(ActionEvent ae) { mp.seek(mp.getTotalDuration());
-	 * mp.stop(); }
-	 */
 
 }
