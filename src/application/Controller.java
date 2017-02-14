@@ -3,14 +3,18 @@ package application;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -32,6 +36,8 @@ public class Controller implements Initializable {
 	private Button right;
 	@FXML
 	private Button stop;
+	@FXML
+	private Slider seek;
 	
 	private ImageView playIcon = new ImageView(new Image(getClass().getResourceAsStream("/play.png")));
 	private ImageView pauseIcon = new ImageView(new Image(getClass().getResourceAsStream("/pause.png")));
@@ -57,6 +63,17 @@ public class Controller implements Initializable {
 
 		width.bind(Bindings.selectDouble(mv.sceneProperty(), "width"));
 		height.bind(Bindings.selectDouble(mv.sceneProperty(), "height"));
+		
+		seek.setMax(mp.getTotalDuration().toSeconds());
+		seek.setMin(0);
+		seek.setOnMousePressed(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				mp.seek(Duration.seconds(seek.getValue()));
+			}
+			
+		});;
 	}
 
 	private void setIcons() {
