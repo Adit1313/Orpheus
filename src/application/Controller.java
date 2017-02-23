@@ -63,33 +63,14 @@ public class Controller implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle res) {
-		String path = new File("src/videos/gold.mp4").getAbsolutePath();
+		String path = new File("src/videos/random.mp4").getAbsolutePath();
 
 		m = new Media(new File(path).toURI().toString());
 		mp = new MediaPlayer(m);
 		mv.setMediaPlayer(mp);
 
 		mp.setAutoPlay(true);
-		mp.setOnEndOfMedia(new Runnable() {
-
-			@Override
-			public void run() {
-				if (playlistPlaying) {
-					if (currentMedia == totalMedia - 1) {
-						mp.stop();
-						currentMedia = 0;
-					} else {
-						currentMedia++;
-						mp.stop();
-						mp = new MediaPlayer(medias.get(currentMedia));
-					}
-				} else {
-					mp.stop();
-					play.setGraphic(playIcon);
-				}
-			}
-
-		});
+		
 
 		mp.setVolume(0.3);
 		volume.setValue(mp.getVolume() * 100);
@@ -125,6 +106,10 @@ public class Controller implements Initializable {
 						Main.window.setFullScreen(true);
 						full = true;
 					}
+				} else if (evt.getCode() == KeyCode.D) {
+					jumpRight();
+				} else if (evt.getCode() == KeyCode.A) {
+					jumpLeft();
 				}
 			}
 		});
@@ -212,6 +197,11 @@ public class Controller implements Initializable {
 		
 		totalMedia = medias.size();
 		currentMedia = 0;
+		
+		mp = new MediaPlayer(medias.get(currentMedia));
+		
+		mv.setMediaPlayer(mp);
+		mp.setAutoPlay(true);
 	}
 
 }
