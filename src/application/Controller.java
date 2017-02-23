@@ -2,11 +2,14 @@ package application;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,7 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -37,8 +41,8 @@ public class Controller implements Initializable {
 	@FXML
 	private Button stop;
 	@FXML
-	private Slider seek;
-	
+	private Slider volume;
+
 	private ImageView playIcon = new ImageView(new Image(getClass().getResourceAsStream("/play.png")));
 	private ImageView pauseIcon = new ImageView(new Image(getClass().getResourceAsStream("/pause.png")));
 	private ImageView stopIcon = new ImageView(new Image(getClass().getResourceAsStream("/stop.png")));
@@ -46,6 +50,16 @@ public class Controller implements Initializable {
 	private ImageView backIcon = new ImageView(new Image(getClass().getResourceAsStream("/backward.png")));
 
 	private boolean playing = true;
+	private boolean full = false;
+
+	// Playlist variables and objects
+	boolean playlistPlaying = false;
+	int totalMedia = 0;
+	int currentMedia = 0;
+
+	List<File> playlist = new ArrayList<File>();
+	List<String> paths = new ArrayList<String>();
+	List<Media> medias = new ArrayList<Media>();
 
 	@Override
 	public void initialize(URL location, ResourceBundle res) {
@@ -54,7 +68,39 @@ public class Controller implements Initializable {
 		m = new Media(new File(path).toURI().toString());
 		mp = new MediaPlayer(m);
 		mv.setMediaPlayer(mp);
+
 		mp.setAutoPlay(true);
+		mp.setOnEndOfMedia(new Runnable() {
+
+			@Override
+			public void run() {
+				if (playlistPlaying) {
+					if (currentMedia == totalMedia - 1) {
+						mp.stop();
+						currentMedia = 0;
+					} else {
+						currentMedia++;
+						mp.stop();
+						mp = new MediaPlayer(medias.get(currentMedia));
+					}
+				} else {
+					mp.stop();
+					play.setGraphic(playIcon);
+				}
+			}
+
+		});
+
+		mp.setVolume(0.3);
+		volume.setValue(mp.getVolume() * 100);
+		volume.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> prevValue, Number newVal, Number arg2) {
+				mp.setVolume(newVal.doubleValue() / 100);
+			}
+
+		});
 
 		setIcons();
 
@@ -63,17 +109,25 @@ public class Controller implements Initializable {
 
 		width.bind(Bindings.selectDouble(mv.sceneProperty(), "width"));
 		height.bind(Bindings.selectDouble(mv.sceneProperty(), "height"));
-		
-		seek.setMax(mp.getTotalDuration().toSeconds());
-		seek.setMin(0);
-		seek.setOnMousePressed(new EventHandler<MouseEvent>() {
+	}
+
+	public void setKeyEvents() {
+		Main.window.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 			@Override
-			public void handle(MouseEvent event) {
-				mp.seek(Duration.seconds(seek.getValue()));
+			public void handle(KeyEvent evt) {
+
+				if (evt.getCode() == KeyCode.F) {
+					if (full) {
+						Main.window.setFullScreen(false);
+						full = false;
+					} else {
+						Main.window.setFullScreen(true);
+						full = true;
+					}
+				}
 			}
-			
-		});;
+		});
 	}
 
 	private void setIcons() {
@@ -83,7 +137,7 @@ public class Controller implements Initializable {
 		right.setGraphic(forwardIcon);
 	}
 
-	public void playOrPause(ActionEvent ae) {
+	public void playOrPause() {
 		if (playing) {
 			mp.pause();
 			playing = false;
@@ -96,35 +150,68 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public void stop(ActionEvent ae) {
+	public void stop() {
 		mp.stop();
 		play.setGraphic(playIcon);
+		playlistPlaying = false;
 	}
 
-	public void jumpLeft(ActionEvent ae) {
-		mp.seek(mp.getCurrentTime().subtract(Duration.seconds(10)));
+	public void jumpLeft() {
+		mp.seek(mp.getCurrentTime().subtract(Duration.seconds(5)));
 	}
 
-	public void jumpRight(ActionEvent ae) {
-		mp.seek(mp.getCurrentTime().add(Duration.seconds(10)));
+	public void jumpRight() {
+		mp.seek(mp.getCurrentTime().add(Duration.seconds(5)));
 	}
-	
+
 	public void loadFile() {
+		playlistPlaying = false;
+		
+		mp.pause();
+		play.setGraphic(playIcon);
+
 		FileChooser fc = new FileChooser();
 		fc.setInitialDirectory(new File(System.getProperty("user.home")));
 		fc.setTitle("Select Video!");
-		
+
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP4", "*.mp4"));
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
-		
+
 		String toPlay = fc.showOpenDialog(Main.window).getAbsolutePath();
-		
+
 		mp.stop();
-		
+
 		m = new Media(new File(toPlay).toURI().toString());
 		mp = new MediaPlayer(m);
 		mv.setMediaPlayer(mp);
 		mp.setAutoPlay(true);
+	}
+
+	public void loadFiles() {
+		playlistPlaying = true;
+		
+		mp.pause();
+		play.setGraphic(playIcon);
+
+		FileChooser fc = new FileChooser();
+		fc.setInitialDirectory(new File(System.getProperty("user.home")));
+		fc.setTitle("Select Videos!");
+
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP4", "*.mp4"));
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
+
+		playlist = fc.showOpenMultipleDialog(Main.window);
+
+		for (int i = 0; i < playlist.size(); i++) {
+			paths.add(playlist.get(i).getAbsolutePath());
+		}
+
+		for (int i = 0; i < paths.size(); i++) {
+			medias.add(new Media(new File(paths.get(i)).toURI().toString()));
+		}
+		
+		totalMedia = medias.size();
+		currentMedia = 0;
 	}
 
 }
