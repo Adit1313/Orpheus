@@ -60,6 +60,7 @@ public class Controller implements Initializable {
 	List<File> playlist = new ArrayList<File>();
 	List<String> paths = new ArrayList<String>();
 	List<Media> medias = new ArrayList<Media>();
+	List<MediaPlayer> players = new ArrayList<MediaPlayer>();
 
 	@Override
 	public void initialize(URL location, ResourceBundle res) {
@@ -202,6 +203,12 @@ public class Controller implements Initializable {
 		
 		mv.setMediaPlayer(mp);
 		mp.setAutoPlay(true);
+	}
+	
+	private MediaPlayer createPlayers(String source) {
+		Media mTmp = new Media(source);
+		MediaPlayer med = new MediaPlayer(mTmp);
+		return med;
 	}
 
 }
