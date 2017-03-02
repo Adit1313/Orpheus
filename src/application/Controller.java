@@ -54,12 +54,8 @@ public class Controller implements Initializable {
 
 	// Playlist variables and objects
 	boolean playlistPlaying = false;
-	int totalMedia = 0;
-	int currentMedia = 0;
-
 	List<File> playlist = new ArrayList<File>();
 	List<String> paths = new ArrayList<String>();
-	List<Media> medias = new ArrayList<Media>();
 	List<MediaPlayer> players = new ArrayList<MediaPlayer>();
 
 	@Override
@@ -71,7 +67,6 @@ public class Controller implements Initializable {
 		mv.setMediaPlayer(mp);
 
 		mp.setAutoPlay(true);
-		
 
 		mp.setVolume(0.3);
 		volume.setValue(mp.getVolume() * 100);
@@ -111,6 +106,8 @@ public class Controller implements Initializable {
 					jumpRight();
 				} else if (evt.getCode() == KeyCode.A) {
 					jumpLeft();
+				} else if (evt.getCode() == KeyCode.SPACE) {
+					playOrPause();
 				}
 			}
 		});
@@ -152,7 +149,7 @@ public class Controller implements Initializable {
 
 	public void loadFile() {
 		playlistPlaying = false;
-		
+
 		mp.pause();
 		play.setGraphic(playIcon);
 
@@ -175,7 +172,7 @@ public class Controller implements Initializable {
 
 	public void loadFiles() {
 		playlistPlaying = true;
-		
+
 		mp.pause();
 		play.setGraphic(playIcon);
 
@@ -183,8 +180,8 @@ public class Controller implements Initializable {
 		fc.setInitialDirectory(new File(System.getProperty("user.home")));
 		fc.setTitle("Select Videos!");
 
-		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP4", "*.mp4"));
-		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP4 (*.mp4)", "*.mp4"));
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("MP3 (*.mp3)", "*.mp3"));
 
 		playlist = fc.showOpenMultipleDialog(Main.window);
 
@@ -193,20 +190,30 @@ public class Controller implements Initializable {
 		}
 
 		for (int i = 0; i < paths.size(); i++) {
-			medias.add(new Media(new File(paths.get(i)).toURI().toString()));
+			players.add(createPlayers(paths.get(i)));
 		}
-		
-		totalMedia = medias.size();
-		currentMedia = 0;
-		
-		mp = new MediaPlayer(medias.get(currentMedia));
-		
-		mv.setMediaPlayer(mp);
-		mp.setAutoPlay(true);
+
+		setPlayerEndProperties();
+
+		play.setGraphic(pauseIcon);
 	}
-	
+
+	private void setPlayerEndProperties() {
+		players.get(1).setOnEndOfMedia(new Runnable() {
+
+			@Override
+			public void run() {
+				players.get(0).stop();
+				players.get(1).setAutoPlay(true);
+				mv.setMediaPlayer(players.get(1));
+				players.remove(0);
+			}
+
+		});
+	}
+
 	private MediaPlayer createPlayers(String source) {
-		Media mTmp = new Media(source);
+		Media mTmp = new Media(new File(source).toURI().toString());
 		MediaPlayer med = new MediaPlayer(mTmp);
 		return med;
 	}

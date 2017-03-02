@@ -24,13 +24,6 @@ public class Main extends Application {
 			Scene scn = new Scene(root);
 			scn.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
-			scn.setOnKeyPressed(new EventHandler<KeyEvent>() {
-				@Override
-				public void handle(KeyEvent evt) {
-
-				}
-			});
-
 			window.setResizable(false);
 			window.setScene(scn);
 			c.setKeyEvents();
